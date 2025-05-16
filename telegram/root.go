@@ -1,11 +1,12 @@
 package telegram
 
 import (
+	"log"
+	"time"
+
 	"github.com/assimon/captcha-bot/util/config"
 	ulog "github.com/assimon/captcha-bot/util/log"
 	tb "gopkg.in/telebot.v3"
-	"log"
-	"time"
 )
 
 var Bot *tb.Bot
@@ -47,6 +48,12 @@ func RegisterHandle() {
 	Bot.Handle(START_CMD, StartCaptcha, adCommandDefenseMiddleware)
 	Bot.Handle(tb.OnChatMember, UserJoinGroup)
 	Bot.Handle(tb.OnText, OnTextMessage)
+	Bot.Handle(tb.OnUserJoined, func(c tb.Context) error {
+		return Bot.Delete(&tb.Message{Chat: c.Message().Chat, ID: c.Message().ID})
+	})
+	Bot.Handle(tb.OnUserLeft, func(c tb.Context) error {
+		return Bot.Delete(&tb.Message{Chat: c.Message().Chat, ID: c.Message().ID})
+	})
 
 	// 广告
 	Bot.Handle(ADD_AD, AddAd, isRootMiddleware, adCommandDefenseMiddleware)
