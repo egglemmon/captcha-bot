@@ -1,19 +1,20 @@
 package orm
 
 import (
+	"log"
+
 	"github.com/assimon/captcha-bot/model"
 	"github.com/assimon/captcha-bot/util/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
 )
 
 var Gdb *gorm.DB
 
 func InitDb() {
 	db, err := gorm.Open(sqlite.Open(config.AppPath+"/db/geecaptcha.db"), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Warn),
 	})
 	if err != nil {
 		log.Fatal("open database err:", err)
